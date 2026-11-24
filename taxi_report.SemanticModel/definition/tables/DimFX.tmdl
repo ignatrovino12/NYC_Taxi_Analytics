@@ -1,0 +1,33 @@
+table DimFX
+	lineageTag: 4bc35969-8936-4123-b2c2-fa71c28a0049
+
+	column usd_per_eur
+		dataType: double
+		lineageTag: 4b9d929d-e70e-4edf-9e13-aabebfb5d4f8
+		summarizeBy: sum
+		sourceColumn: usd_per_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: d63e7557-8676-426a-896b-1c129ab9f748
+		summarizeBy: none
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimFX = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("e4gotkgfc5iepcclma6fmr22sa-vj26vrnzehgu3n2w5teij4xlzm.datawarehouse.fabric.microsoft.com", "WH_Taxi_Analytics"),
+				    dbo_DimFX = Source{[Schema="dbo",Item="DimFX"]}[Data]
+				in
+				    dbo_DimFX
+
+	annotation PBI_ResultType = Table
+

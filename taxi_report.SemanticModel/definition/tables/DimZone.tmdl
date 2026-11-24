@@ -1,0 +1,47 @@
+table DimZone
+	lineageTag: d4a60487-29fd-4320-bad4-7e71a6acd1cc
+
+	column zone_key
+		dataType: int64
+		formatString: 0
+		lineageTag: ef0c65e8-c31e-462b-99a2-cedab49964de
+		summarizeBy: none
+		sourceColumn: zone_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column borough
+		dataType: string
+		lineageTag: 7fdba66d-962c-4e2b-9c66-78e2df695dc7
+		summarizeBy: none
+		sourceColumn: borough
+
+		annotation SummarizationSetBy = Automatic
+
+	column zone
+		dataType: string
+		lineageTag: f1b57ea2-2ef3-4def-bf74-004042a574ec
+		summarizeBy: none
+		sourceColumn: zone
+
+		annotation SummarizationSetBy = Automatic
+
+	column service_zone
+		dataType: string
+		lineageTag: 0b49c966-f8da-4344-a4f4-720b8f9982b7
+		summarizeBy: none
+		sourceColumn: service_zone
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimZone = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("e4gotkgfc5iepcclma6fmr22sa-vj26vrnzehgu3n2w5teij4xlzm.datawarehouse.fabric.microsoft.com", "WH_Taxi_Analytics"),
+				    dbo_DimZone = Source{[Schema="dbo",Item="DimZone"]}[Data]
+				in
+				    dbo_DimZone
+
+	annotation PBI_ResultType = Table
+

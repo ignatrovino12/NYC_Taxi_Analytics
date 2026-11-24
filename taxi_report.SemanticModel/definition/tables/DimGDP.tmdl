@@ -1,0 +1,32 @@
+table DimGDP
+	lineageTag: 2065d3bb-f0c6-4cff-94c5-63f8c5cc04f8
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: 882a937d-9e5b-413d-8f47-fcf306ff1e99
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column gdp_usd
+		dataType: int64
+		formatString: 0
+		lineageTag: bb173058-37c8-454b-b692-d1904f399772
+		summarizeBy: sum
+		sourceColumn: gdp_usd
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimGDP = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("e4gotkgfc5iepcclma6fmr22sa-vj26vrnzehgu3n2w5teij4xlzm.datawarehouse.fabric.microsoft.com", "WH_Taxi_Analytics"),
+				    dbo_DimGDP = Source{[Schema="dbo",Item="DimGDP"]}[Data]
+				in
+				    dbo_DimGDP
+
+	annotation PBI_ResultType = Table
+

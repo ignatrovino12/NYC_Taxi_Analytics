@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "taxi_report"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "deaa91ba-eead-82af-45f7-74b431e494c5"
+  }
+}

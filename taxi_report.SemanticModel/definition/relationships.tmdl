@@ -1,0 +1,27 @@
+relationship 55a14f30-3bdb-4b76-a855-2a8e67e63514
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DimDate.date
+	toColumn: LocalDateTable_52c028eb-12e7-4c46-92a0-61b1b0011f2e.Date
+
+relationship AutoDetected_c4a9af41-db16-40ed-8089-b2e0cee116fb
+	fromColumn: FactAirQualityDaily.zone_key
+	toColumn: DimZone.zone_key
+
+relationship AutoDetected_1c59ca5e-3b4d-4b2f-9d72-600a5da7e2cf
+	fromColumn: FactTaxiDaily.zone_key
+	toColumn: DimZone.zone_key
+
+relationship 46034f5a-7ee9-7db4-dfb6-f1ff51800ab7
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: DimDate.date_key
+	toColumn: DimFX.date_key
+
+relationship bf14f4a2-3706-5048-407a-e0b6f812291a
+	fromColumn: FactAirQualityDaily.date_key
+	toColumn: DimDate.date_key
+
+relationship 85c327e9-37ce-3dc6-d87a-e4132b29ea7c
+	fromColumn: FactTaxiDaily.date_key
+	toColumn: DimDate.date_key
+

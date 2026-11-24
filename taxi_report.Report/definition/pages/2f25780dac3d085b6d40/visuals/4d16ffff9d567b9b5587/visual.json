@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "4d16ffff9d567b9b5587",
+  "position": {
+    "x": 1686.9487750556793,
+    "y": 100.48997772828508,
+    "z": 8000,
+    "height": 224.49888641425389,
+    "width": 233.05122494432072,
+    "tabOrder": 8000
+  },
+  "visual": {
+    "visualType": "image",
+    "objects": {
+      "image": [
+        {
+          "properties": {
+            "sourceType": {
+              "expr": {
+                "Literal": {
+                  "Value": "'imageUrl'"
+                }
+              }
+            },
+            "sourceUrl": {
+              "expr": {
+                "Literal": {
+                  "Value": "'https://img.magnific.com/premium-vector/isolated-pictogram-traffic-jam-cars-truck-exhaust-smoke-air-pollution-environment-hazard-icon_626431-3302.jpg?semt=ais_hybrid&w=740&q=80'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

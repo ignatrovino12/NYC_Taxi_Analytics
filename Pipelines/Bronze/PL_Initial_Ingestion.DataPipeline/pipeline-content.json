@@ -1,0 +1,202 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "59376112-9596-9751-4cf8-903fcffd264d",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Prepare Air Quality Ingestion",
+        "dependsOn": [
+          {
+            "activity": "Taxi Zones Ingestion",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "d653dd81-7a8c-4e92-8d21-60b542bb0b11",
+          "workspaceId": "c5ea75aa-21b9-4dcd-b756-ecc884f2ebcb"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Taxi Ingestion",
+        "state": "Inactive",
+        "onInactiveMarkAs": "Succeeded",
+        "dependsOn": []
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "b59f2a71-4bfe-473a-bacc-7e62ed3705a2",
+          "workspaceId": "c5ea75aa-21b9-4dcd-b756-ecc884f2ebcb"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Taxi Zones Ingestion",
+        "state": "Inactive",
+        "onInactiveMarkAs": "Succeeded",
+        "dependsOn": [
+          {
+            "activity": "Taxi Ingestion",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "RefreshDataflow",
+        "typeProperties": {
+          "dataflowId": "fedcfdbd-20b4-4cf7-bb15-313c47758ffe",
+          "workspaceId": "c5ea75aa-21b9-4dcd-b756-ecc884f2ebcb",
+          "notifyOption": "NoNotification",
+          "dataflowType": "DataflowFabric",
+          "executeMashupQueriesOnly": true
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "ECB",
+        "state": "Inactive",
+        "onInactiveMarkAs": "Succeeded",
+        "dependsOn": [
+          {
+            "activity": "Taxi Zones Ingestion",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "RefreshDataflow",
+        "typeProperties": {
+          "dataflowId": "0d6aeb42-27a3-4b48-b168-adcb9b51a303",
+          "workspaceId": "c5ea75aa-21b9-4dcd-b756-ecc884f2ebcb",
+          "notifyOption": "NoNotification",
+          "dataflowType": "DataflowFabric",
+          "executeMashupQueriesOnly": true
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "World Bank",
+        "state": "Inactive",
+        "onInactiveMarkAs": "Succeeded",
+        "dependsOn": [
+          {
+            "activity": "Taxi Zones Ingestion",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "isSequential": true,
+          "items": {
+            "value": "@json(activity('Prepare Air Quality Ingestion').output.result.exitValue).Chunks",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "RefreshDataflow",
+              "typeProperties": {
+                "dataflowId": "3c32b323-23e9-84b3-40ae-1ebc56684d30",
+                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                "notifyOption": "NoNotification",
+                "dataflowType": "DataflowFabric",
+                "parameters": {
+                  "OPENAQ_API_KEY": {
+                    "value": "9d39e186b53700fde47d9277cc5de9e6f48397cef1a1001b318e79b9f4d73b4e",
+                    "type": "String"
+                  },
+                  "DateFrom": {
+                    "value": {
+                      "value": "@json(activity('Prepare Air Quality Ingestion').output.result.exitValue).DateFrom",
+                      "type": "Expression"
+                    },
+                    "type": "Date"
+                  },
+                  "DateTo": {
+                    "value": {
+                      "value": "@json(activity('Prepare Air Quality Ingestion').output.result.exitValue).DateTo",
+                      "type": "Expression"
+                    },
+                    "type": "Date"
+                  },
+                  "ChunkStartDate": {
+                    "value": {
+                      "value": "@item().ChunkStartDate",
+                      "type": "Expression"
+                    },
+                    "type": "Date"
+                  },
+                  "ChunkEndDate": {
+                    "value": {
+                      "value": "@item().ChunkEndDate",
+                      "type": "Expression"
+                    },
+                    "type": "Date"
+                  }
+                },
+                "executeMashupQueriesOnly": true
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Air Quality",
+              "dependsOn": []
+            }
+          ]
+        },
+        "name": "Ingest Air Quality per year",
+        "dependsOn": [
+          {
+            "activity": "Prepare Air Quality Ingestion",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

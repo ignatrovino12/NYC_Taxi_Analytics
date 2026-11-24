@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "NB_FactAirQualityDaily"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "7e11ab8a-7906-8d21-4063-df22f162c030"
+  }
+}

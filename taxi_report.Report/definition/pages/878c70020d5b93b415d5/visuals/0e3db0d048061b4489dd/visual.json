@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "0e3db0d048061b4489dd",
+  "position": {
+    "x": 1687.8272667883884,
+    "y": 98.799644885173961,
+    "z": 9000,
+    "height": 228.47417879696476,
+    "width": 232.59083066718034,
+    "tabOrder": 9000
+  },
+  "visual": {
+    "visualType": "image",
+    "objects": {
+      "image": [
+        {
+          "properties": {
+            "sourceType": {
+              "expr": {
+                "Literal": {
+                  "Value": "'imageUrl'"
+                }
+              }
+            },
+            "sourceUrl": {
+              "expr": {
+                "Literal": {
+                  "Value": "'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGUGEdTRO40oAvqTiizP9s1fI0RT8wH3HSulMbET3IwA&s'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

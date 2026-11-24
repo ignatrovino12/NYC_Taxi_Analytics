@@ -1,0 +1,79 @@
+{
+  "formatVersion": "202502",
+  "computeEngineSettings": {
+    "allowModernEvaluationEngine": true
+  },
+  "name": "DF_Air_Quality",
+  "queryGroups": [],
+  "documentLocale": "en-US",
+  "queriesMetadata": {
+    "ChunkEndDate": {
+      "queryId": "66a09746-57ad-4608-b7a6-c0bd414599e5",
+      "queryName": "ChunkEndDate",
+      "loadEnabled": false
+    },
+    "ChunkStartDate": {
+      "queryId": "a8443fcc-0186-483d-aa9e-3b112b33f03f",
+      "queryName": "ChunkStartDate",
+      "loadEnabled": false
+    },
+    "DateFrom": {
+      "queryId": "9be3e925-a99b-4a14-bdbd-ee413bf01f56",
+      "queryName": "DateFrom",
+      "loadEnabled": false
+    },
+    "DateTo": {
+      "queryId": "b79b5790-5aea-4d01-95e1-c2795f969aa7",
+      "queryName": "DateTo",
+      "loadEnabled": false
+    },
+    "Get_Sensor_Data": {
+      "queryId": "e602ac0f-fd32-4405-bd5f-438cce0a95d4",
+      "queryName": "Get_Sensor_Data",
+      "loadEnabled": false
+    },
+    "OPENAQ_API_KEY": {
+      "queryId": "da2d6286-9dad-4a3a-a195-e262f98568bd",
+      "queryName": "OPENAQ_API_KEY",
+      "loadEnabled": false
+    },
+    "Query_Air_Quality": {
+      "queryId": "5a5648cd-784c-4ef4-abb1-d1ce02903435",
+      "queryName": "Query_Air_Quality",
+      "loadEnabled": false
+    },
+    "Query_Air_Quality_DataDestination": {
+      "queryId": "2c220854-4322-4521-82df-1c0b5cc43aeb",
+      "queryName": "Query_Air_Quality_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    },
+    "Query_Locations": {
+      "queryId": "936a78b5-cc0f-4f4d-867f-4ecbac550657",
+      "queryName": "Query_Locations",
+      "loadEnabled": false
+    },
+    "Query_Sensors": {
+      "queryId": "3a6c01ec-2552-4368-b018-dadb496a69b6",
+      "queryName": "Query_Sensors",
+      "loadEnabled": false
+    },
+    "Query_Sensors_Last_Dates": {
+      "queryId": "96c4ca3e-5327-4b3f-9741-12496eb5f62d",
+      "queryName": "Query_Sensors_Last_Dates"
+    }
+  },
+  "connections": [
+    {
+      "path": "https://api.openaq.org/",
+      "kind": "Web",
+      "connectionId": "{\"ClusterId\":\"9f2ac943-52b6-4fe0-9f30-c5ee01a31132\",\"DatasourceId\":\"520d5670-3635-4b5b-9139-e47d684a66f6\"}"
+    },
+    {
+      "path": "Lakehouse",
+      "kind": "Lakehouse",
+      "connectionId": "{\"ClusterId\":\"9f2ac943-52b6-4fe0-9f30-c5ee01a31132\",\"DatasourceId\":\"5fc6fae7-4fbc-4228-b4f5-e3a9be604daa\"}"
+    }
+  ],
+  "parametric": true
+}

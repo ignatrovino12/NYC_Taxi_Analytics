@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Warehouse",
+    "displayName": "WH_Taxi_Analytics",
+    "description": ""
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "c1123e70-e60f-a2fb-4dcf-67255ae14a82"
+  }
+}

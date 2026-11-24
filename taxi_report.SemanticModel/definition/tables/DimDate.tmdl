@@ -1,0 +1,139 @@
+table DimDate
+	lineageTag: 14eb60d9-7737-4ed7-b0fb-81ec9b2b3684
+
+	column date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 2f7edc89-e43a-4b9d-9653-41b57a5772c7
+		summarizeBy: none
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 43bda8f8-6f2b-4d7c-a673-e2469384e58c
+		summarizeBy: none
+		sourceColumn: date
+
+		variation Variation
+			isDefault
+			relationship: 55a14f30-3bdb-4b76-a855-2a8e67e63514
+			defaultHierarchy: LocalDateTable_52c028eb-12e7-4c46-92a0-61b1b0011f2e.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: 04310eee-c602-46ea-9706-030e48bbc723
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column quarter
+		dataType: int64
+		formatString: 0
+		lineageTag: d7cedfe1-1849-459a-aa8f-8ba1a8105c09
+		summarizeBy: sum
+		sourceColumn: quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: int64
+		formatString: 0
+		lineageTag: 1c588826-9f49-4ee5-90a3-2c115c248f0b
+		summarizeBy: sum
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_name
+		dataType: string
+		lineageTag: 28c698a5-f685-44f5-a839-598a7ad294cb
+		summarizeBy: none
+		sourceColumn: month_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column day
+		dataType: int64
+		formatString: 0
+		lineageTag: 8d9c7624-9b1b-494a-bff5-94c81d829f21
+		summarizeBy: sum
+		sourceColumn: day
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_of_week
+		dataType: int64
+		formatString: 0
+		lineageTag: 3f8a958b-c089-41cb-b37e-bb928d3cc297
+		summarizeBy: sum
+		sourceColumn: day_of_week
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_name
+		dataType: string
+		lineageTag: 38c44c02-c555-4b4a-a0b4-1bc32271c6af
+		summarizeBy: none
+		sourceColumn: day_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_weekend
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: fce83c2b-df3c-433f-8dcc-a4a1f94cd424
+		summarizeBy: none
+		sourceColumn: is_weekend
+
+		annotation SummarizationSetBy = Automatic
+
+	column FX_rate = ```
+			
+			VAR CurrentDate = DimDate[date_key]
+			
+			VAR LastFXDate =
+			    CALCULATE(
+			        MAX(DimFX[date_key]),
+			        FILTER(
+			            ALL(DimFX),
+			            DimFX[date_key] <= CurrentDate
+			        )
+			    )
+			
+			RETURN
+			    CALCULATE(
+			        MAX(DimFX[usd_per_eur]),
+			        FILTER(
+			            ALL(DimFX),
+			            DimFX[date_key] = LastFXDate
+			        )
+			    )
+			
+			```
+		lineageTag: 833f0e82-4a49-4f12-b41a-ff6f3d88dc39
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition DimDate = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("e4gotkgfc5iepcclma6fmr22sa-vj26vrnzehgu3n2w5teij4xlzm.datawarehouse.fabric.microsoft.com", "WH_Taxi_Analytics"),
+				    dbo_DimDate = Source{[Schema="dbo",Item="DimDate"]}[Data]
+				in
+				    dbo_DimDate
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,171 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "36bcef02-f33a-98ed-4b76-4fe9667666a4",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Prepare AQ Parameters",
+        "dependsOn": [
+          {
+            "activity": "Taxi Ingestion",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "42bb0b11-60b5-8d21-4e92-7a8cd653dd81",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Taxi Ingestion",
+        "dependsOn": []
+      },
+      {
+        "type": "IfCondition",
+        "typeProperties": {
+          "expression": {
+            "value": "@json(activity('Prepare AQ Parameters').output.result.exitValue).HasNewData",
+            "type": "Expression"
+          },
+          "ifTrueActivities": [
+            {
+              "type": "RefreshDataflow",
+              "typeProperties": {
+                "dataflowId": "3c32b323-23e9-84b3-40ae-1ebc56684d30",
+                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                "notifyOption": "NoNotification",
+                "dataflowType": "DataflowFabric",
+                "parameters": {
+                  "OPENAQ_API_KEY": {
+                    "value": "9d39e186b53700fde47d9277cc5de9e6f48397cef1a1001b318e79b9f4d73b4e",
+                    "type": "String"
+                  },
+                  "DateFrom": {
+                    "value": {
+                      "value": "@json(activity('Prepare AQ Parameters').output.result.exitValue).DateFrom",
+                      "type": "Expression"
+                    },
+                    "type": "Date"
+                  },
+                  "DateTo": {
+                    "value": {
+                      "value": "@json(activity('Prepare AQ Parameters').output.result.exitValue).DateTo",
+                      "type": "Expression"
+                    },
+                    "type": "Date"
+                  },
+                  "ChunkStartDate": {
+                    "value": {
+                      "value": "@json(activity('Prepare AQ Parameters').output.result.exitValue).DateFrom",
+                      "type": "Expression"
+                    },
+                    "type": "Date"
+                  },
+                  "ChunkEndDate": {
+                    "value": {
+                      "value": "@json(activity('Prepare AQ Parameters').output.result.exitValue).DateTo",
+                      "type": "Expression"
+                    },
+                    "type": "Date"
+                  }
+                },
+                "executeMashupQueriesOnly": true
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Air Quality Ingestion",
+              "dependsOn": []
+            }
+          ],
+          "ifFalseActivities": []
+        },
+        "name": "If New Data",
+        "dependsOn": [
+          {
+            "activity": "Prepare AQ Parameters",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "RefreshDataflow",
+        "typeProperties": {
+          "dataflowId": "47758ffe-313c-bb15-4cf7-20b4fedcfdbd",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "notifyOption": "NoNotification",
+          "dataflowType": "DataflowFabric",
+          "executeMashupQueriesOnly": true
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "ECB",
+        "dependsOn": [
+          {
+            "activity": "Taxi Ingestion",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "RefreshDataflow",
+        "typeProperties": {
+          "dataflowId": "9b51a303-adcb-b168-4b48-27a30d6aeb42",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "notifyOption": "NoNotification",
+          "dataflowType": "DataflowFabric",
+          "executeMashupQueriesOnly": true
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "World Bank GDP",
+        "dependsOn": [
+          {
+            "activity": "Taxi Ingestion",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

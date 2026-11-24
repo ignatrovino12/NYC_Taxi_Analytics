@@ -1,0 +1,265 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "f60b31b7-e8de-ab3c-4639-14b98c583bef",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Taxi Data",
+        "dependsOn": []
+      },
+      {
+        "type": "IfCondition",
+        "typeProperties": {
+          "expression": {
+            "value": "@not(equals(activity('Taxi Data').output.result.exitValue,'NO_NEW_DATA'))",
+            "type": "Expression"
+          },
+          "ifTrueActivities": [
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "75228dd9-4b1a-995e-46a4-6db721de4a75",
+                "workspaceId": "00000000-0000-0000-0000-000000000000"
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Date Lookup",
+              "dependsOn": []
+            },
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "b543c06b-24ae-8515-4fcf-0927181176e4",
+                "workspaceId": "00000000-0000-0000-0000-000000000000"
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Air Quality Data",
+              "dependsOn": [
+                {
+                  "activity": "Date Lookup",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "9f3941c4-64b3-a52c-45fc-b0155fe55827",
+                "workspaceId": "00000000-0000-0000-0000-000000000000"
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Date Dimension",
+              "dependsOn": [
+                {
+                  "activity": "Air Quality Data",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "8dca88e3-1eb3-891c-4400-f5cbf2b7a680",
+                "workspaceId": "00000000-0000-0000-0000-000000000000"
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Fact Taxi",
+              "dependsOn": [
+                {
+                  "activity": "Date Dimension",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "7e11ab8a-7906-8d21-4063-df22f162c030",
+                "workspaceId": "00000000-0000-0000-0000-000000000000"
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Fact Air Quality",
+              "dependsOn": [
+                {
+                  "activity": "Fact Taxi",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "PBISemanticModelRefresh",
+              "typeProperties": {
+                "method": "POST",
+                "groupId": "c5ea75aa-21b9-4dcd-b756-ecc884f2ebcb",
+                "datasetId": "ed2b1f40-2602-4667-b7e9-8eea532acfe4",
+                "commitMode": "Transactional",
+                "retryCount": 1,
+                "objects": [
+                  {
+                    "table": "DimDate"
+                  },
+                  {
+                    "table": "DimFX"
+                  },
+                  {
+                    "table": "DimGDP"
+                  },
+                  {
+                    "table": "DimZone"
+                  },
+                  {
+                    "table": "FactAirQualityDaily"
+                  },
+                  {
+                    "table": "FactTaxiDaily"
+                  }
+                ],
+                "waitOnCompletion": true,
+                "operationType": "SemanticModelRefresh",
+                "timeout": "1:00:00"
+              },
+              "externalReferences": {
+                "connection": "464ce6c4-47c6-42cb-8f78-5a22d85b338d"
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 1,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Semantic model refresh1",
+              "dependsOn": [
+                {
+                  "activity": "Fact Air Quality",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            }
+          ],
+          "ifFalseActivities": []
+        },
+        "name": "If New Data",
+        "dependsOn": [
+          {
+            "activity": "Taxi Data",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "49241279-b5f1-a82c-4eaf-ba8e335ac36c",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "ECB",
+        "dependsOn": []
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "b037fbf6-9012-ba93-4efd-5ee88d2d2da1",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "ECB GDP Dimensions",
+        "dependsOn": [
+          {
+            "activity": "World Bank GDP",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "fdac48bb-c4ae-a72b-472c-9c521f980493",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "World Bank GDP",
+        "dependsOn": [
+          {
+            "activity": "ECB",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

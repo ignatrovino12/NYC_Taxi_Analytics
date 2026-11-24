@@ -1,0 +1,20 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "2f25780dac3d085b6d40",
+  "displayName": "Mobility vs Air Quality Correlation",
+  "displayOption": "FitToPage",
+  "height": 1080,
+  "width": 1920,
+  "visualInteractions": [
+    {
+      "source": "d153c68ed81d7a84f84f",
+      "target": "9ab8b30600fbb0c1f20a",
+      "type": "DataFilter"
+    },
+    {
+      "source": "d153c68ed81d7a84f84f",
+      "target": "b12fed526ee906b0c449",
+      "type": "DataFilter"
+    }
+  ]
+}

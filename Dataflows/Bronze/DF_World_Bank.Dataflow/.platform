@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Dataflow",
+    "displayName": "DF_World_Bank"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "9b51a303-adcb-b168-4b48-27a30d6aeb42"
+  }
+}

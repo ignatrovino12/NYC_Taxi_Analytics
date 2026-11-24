@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "NB_Prepare_AQ_Scheduled_Ingestion"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "36bcef02-f33a-98ed-4b76-4fe9667666a4"
+  }
+}

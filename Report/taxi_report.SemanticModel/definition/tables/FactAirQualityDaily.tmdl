@@ -1,0 +1,103 @@
+table FactAirQualityDaily
+	lineageTag: 13e6cc5b-1ae5-4e5d-bf03-7f8d051eb812
+
+	measure 'Average Sensor Coverage' = AVERAGE(FactAirQualityDaily[sensor_count])
+		lineageTag: 9e78d1ef-23ee-441a-94b4-2e9c72309171
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'PM25 Average' = CALCULATE( AVERAGE(FactAirQualityDaily[average_value]), FactAirQualityDaily[parameter_name] = "pm25")
+		lineageTag: 9b70864d-9886-47a2-bb91-8af2cb3f0702
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Reporting Sensors' = SUM(FactAirQualityDaily[sensor_count])
+		formatString: 0
+		lineageTag: 858b903d-9ed6-49a4-977a-6906f6c79eb1
+
+	measure 'Total Measurements' = SUM(FactAirQualityDaily[total_measurements])
+		formatString: 0
+		lineageTag: ccb18d2c-ebb1-4bc3-8c6b-e121b82b4b15
+
+	measure 'PM25 Index' =
+			
+			VAR BaseYearValue = CALCULATE([PM25 Average], REMOVEFILTERS(DimDate), DimDate[Year] = 2016)
+			RETURN
+			    DIVIDE([PM25 Average], BaseYearValue) * 100
+		lineageTag: d8731c49-85db-4007-96c3-79f48b95d01b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column zone_key
+		dataType: int64
+		formatString: 0
+		lineageTag: f8655883-c07d-4efb-8143-913f846248db
+		summarizeBy: none
+		sourceColumn: zone_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column parameter_name
+		dataType: string
+		lineageTag: 4df0a216-6d2a-4c32-925c-8596cfb70835
+		summarizeBy: none
+		sourceColumn: parameter_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column unit
+		dataType: string
+		lineageTag: 61d3b04a-acc2-4558-b0cb-2515cfa44a39
+		summarizeBy: none
+		sourceColumn: unit
+
+		annotation SummarizationSetBy = Automatic
+
+	column average_value
+		dataType: double
+		lineageTag: d8bff112-dca1-4dd2-b66e-f861b1e71978
+		summarizeBy: sum
+		sourceColumn: average_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_measurements
+		dataType: int64
+		formatString: 0
+		lineageTag: e99a7fe7-bd4a-40b4-86f9-721146d0df62
+		summarizeBy: sum
+		sourceColumn: total_measurements
+
+		annotation SummarizationSetBy = Automatic
+
+	column sensor_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 6b620340-38a4-4539-8cd2-7732234a419e
+		summarizeBy: sum
+		sourceColumn: sensor_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 0d54bea2-da91-4f7c-b274-67fae5e1a150
+		summarizeBy: none
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactAirQualityDaily = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("e4gotkgfc5iepcclma6fmr22sa-vj26vrnzehgu3n2w5teij4xlzm.datawarehouse.fabric.microsoft.com", "WH_Taxi_Analytics"),
+				    dbo_FactAirQualityDaily = Source{[Schema="dbo",Item="FactAirQualityDaily"]}[Data]
+				in
+				    dbo_FactAirQualityDaily
+
+	annotation PBI_ResultType = Table
+

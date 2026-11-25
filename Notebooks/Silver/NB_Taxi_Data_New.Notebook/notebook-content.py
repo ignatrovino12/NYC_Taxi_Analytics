@@ -159,8 +159,21 @@ new_months = [
     ).collect()
 ]
 
-print(f"New months: {len(new_months)}")
-print(sorted(new_months))
+# print(f"New months: {len(new_months)}")
+# print(sorted(new_months))
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+if not new_months:
+    print("No new taxi data files. Skipping...")
+    mssparkutils.notebook.exit("NO_NEW_DATA")
 
 # METADATA ********************
 

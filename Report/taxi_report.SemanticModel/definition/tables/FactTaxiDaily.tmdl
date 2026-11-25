@@ -1,0 +1,242 @@
+table FactTaxiDaily
+	lineageTag: 14fff513-1e89-4265-9f88-9469bb0f97bd
+
+	measure 'Total Revenue USD' = SUM(FactTaxiDaily[total_fares])
+		lineageTag: 2a7b74ab-bc84-45f3-a843-f63d0810ff90
+
+		changedProperty = IsHidden
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Trips' = SUM(FactTaxiDaily[total_trips])
+		formatString: 0
+		lineageTag: 457450c5-926f-4144-a420-de521af845a3
+
+		changedProperty = IsHidden
+
+	measure 'Average Fare' = DIVIDE([Total Revenue USD], [Total Trips])
+		lineageTag: 1d382d31-4afd-4893-bc64-adb760913ae4
+
+		changedProperty = IsHidden
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Speed' = DIVIDE( SUMX( FactTaxiDaily, FactTaxiDaily[average_speed_mph] * FactTaxiDaily[total_trips]), [Total Trips])
+		lineageTag: c6190763-80f3-49cb-b970-c93f3d962fd2
+
+		changedProperty = IsHidden
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Trip Distance' = DIVIDE( SUMX( FactTaxiDaily, FactTaxiDaily[average_trip_distance] * FactTaxiDaily[total_trips]), [Total Trips])
+		lineageTag: a5c8cefa-b890-476b-a90c-d68d564a7f5c
+
+		changedProperty = IsHidden
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Trip Duration' = DIVIDE( SUMX( FactTaxiDaily, FactTaxiDaily[average_trip_duration] * FactTaxiDaily[total_trips]), [Total Trips])
+		lineageTag: 80d8969d-5676-4556-ac47-098233e03abf
+
+		changedProperty = IsHidden
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure GDP = CALCULATE( SUM(DimGDP[gdp_usd]), TREATAS(VALUES(DimDate[year]), DimGDP[year]))
+		formatString: 0
+		lineageTag: 61eb0eaf-f32b-494e-9db4-95ef1013116a
+
+		changedProperty = IsHidden
+
+	measure 'Revenue Year Growth Percentage' =
+			
+			VAR CurrentYear = SELECTEDVALUE(DimDate[year])
+			
+			VAR PreviousYearRevenue = CALCULATE( [Total Revenue USD], REMOVEFILTERS(DimDate), DimDate[year] = CurrentYear - 1)
+			
+			VAR CurrentYearRevenue =[Total Revenue USD]
+			
+			RETURN
+			    DIVIDE( CurrentYearRevenue - PreviousYearRevenue, PreviousYearRevenue)
+		lineageTag: 8a3ef547-bd4d-457d-8102-70fba9971b30
+
+		changedProperty = IsHidden
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Revenue EUR' =
+			
+			SUMX(
+			    VALUES(DimDate[date_key]),
+			    VAR FXRate =
+			        CALCULATE(MAX(DimDate[FX_rate]))
+			
+			    VAR DailyRevenue =
+			        CALCULATE([Total Revenue USD])
+			
+			    RETURN
+			        DIVIDE(DailyRevenue, FXRate)
+			)
+		lineageTag: 7c5aa4f2-2a1a-4aef-b708-a64be13c0eb2
+
+		changedProperty = IsHidden
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Daily Trips' = AVERAGEX( VALUES(DimDate[Date]), CALCULATE(SUM(FactTaxiDaily[total_trips])))
+		lineageTag: fa6ba3e9-a948-44fc-9b85-1d228f01d7ce
+
+		changedProperty = IsHidden
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Revenue per Trip USD' = DIVIDE( [Total Revenue USD], SUM(FactTaxiDaily[total_trips]))
+		lineageTag: f8d4c79d-662e-4833-a56f-c7b5d7ae9e94
+
+		changedProperty = IsHidden
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Revenue per Trip EUR' = DIVIDE( [Total Revenue EUR], SUM(FactTaxiDaily[total_trips]))
+		lineageTag: 1fb247d0-f4c2-45c3-aa37-81664b4bb275
+
+		changedProperty = IsHidden
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Trips Index' =
+			
+			VAR BaseYearValue = CALCULATE( [Total Trips], REMOVEFILTERS(DimDate), DimDate[Year] = 2016)
+			RETURN
+			    DIVIDE([Total Trips], BaseYearValue) * 100
+		lineageTag: 0964abd2-bdf0-4242-b473-f5d62b28fe21
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'GDP Index' =
+			
+			VAR BaseYearValue = CALCULATE([GDP], REMOVEFILTERS(DimDate), DimDate[Year] = 2016)
+			RETURN
+			    DIVIDE([GDP], BaseYearValue) * 100
+		lineageTag: abcaa118-25d8-487e-92a4-10c31d33f89d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column zone_key
+		dataType: int64
+		formatString: 0
+		lineageTag: ad200fd8-2981-4558-ad40-42679297b6a8
+		summarizeBy: none
+		sourceColumn: zone_key
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_trips
+		dataType: int64
+		formatString: 0
+		lineageTag: 6471e0d1-f7dd-486c-94fe-a9a8d9e816a4
+		summarizeBy: sum
+		sourceColumn: total_trips
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_fares
+		dataType: double
+		lineageTag: e2caa034-1e47-4c51-83b0-682c61e92be5
+		summarizeBy: sum
+		sourceColumn: total_fares
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column average_fare
+		dataType: double
+		lineageTag: 58015a0e-8048-4f9a-829b-3b33352c4132
+		summarizeBy: sum
+		sourceColumn: average_fare
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column average_trip_distance
+		dataType: double
+		lineageTag: 48f52c90-53fa-4a1e-bcac-7e31f2cd9359
+		summarizeBy: sum
+		sourceColumn: average_trip_distance
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column average_trip_duration
+		dataType: double
+		lineageTag: cf4336ec-a400-41cf-af5f-5a159c024a82
+		summarizeBy: sum
+		sourceColumn: average_trip_duration
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column average_speed_mph
+		dataType: double
+		lineageTag: 96dffbbb-2656-494e-bd87-112682615206
+		summarizeBy: sum
+		sourceColumn: average_speed_mph
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column average_passenger_count
+		dataType: double
+		lineageTag: dc4e07fe-e2fa-44fa-9961-8fe3af7351c7
+		summarizeBy: sum
+		sourceColumn: average_passenger_count
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: d40ad7c8-e3e4-434b-89aa-869153cc45bd
+		summarizeBy: none
+		sourceColumn: date_key
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactTaxiDaily = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("e4gotkgfc5iepcclma6fmr22sa-vj26vrnzehgu3n2w5teij4xlzm.datawarehouse.fabric.microsoft.com", "WH_Taxi_Analytics"),
+				    dbo_FactTaxiDaily = Source{[Schema="dbo",Item="FactTaxiDaily"]}[Data]
+				in
+				    dbo_FactTaxiDaily
+
+	changedProperty = IsHidden
+
+	annotation PBI_ResultType = Table
+

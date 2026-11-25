@@ -22,7 +22,9 @@
 
 # CELL ********************
 
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col, date_trunc, percentile_approx, countDistinct, count, avg, when, lit
+from pyspark.sql.functions import sum as spark_sum
+
 
 df = spark.read.table("bronze.air_quality_measurements")
 
@@ -59,8 +61,7 @@ df_sensor_hourly = df_pm25.groupBy(
 df_hour_consensus = df_sensor_hourly.groupBy("hour").agg(
     countDistinct("sensor_id").alias("total_sensor_count"),
     spark_sum( when(col("sensor_pm25") >= 20, 1).otherwise(0)).alias("high_sensor_count")
-).withColumn("high_sensor_ratio", 
-            col("high_sensor_count") / col("total_sensor_count"))
+).withColumn("high_sensor_ratio", col("high_sensor_count") / col("total_sensor_count"))
 
 a = df_sensor_hourly.alias("a")
 b = df_sensor_hourly.alias("b")
@@ -84,12 +85,10 @@ df_peer_stats = (
     ))
 
 df_comparison = ( df_peer_stats.join(df_hour_consensus, "hour")
-    .withColumn( 
-        "relative_ratio",
-        col("sensor_pm25") / when( col("peer_median") > 0, col("peer_median")))
+    .withColumn( "relative_ratio", col("sensor_pm25") / when( col("peer_median") > 0, col("peer_median")))
     .withColumn(
         "is_suspect",
-        (col("peer_count") >= 9) &
+        (col("peer_count") >= 5) &
         (col("sensor_pm25") >= 20) &
         (col("sensor_pm25") > col("peer_median") * 4) &
         ((col("high_sensor_ratio") < 0.20) | (col("sensor_pm25") > col("peer_median") * 10))

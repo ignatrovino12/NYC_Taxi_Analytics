@@ -69,9 +69,11 @@ def get_sensors_period():
         .withColumn("last_date", F.to_date("last_date"))
         .withColumn("sensor_id", F.col("sensor_id").cast("long")))
 
+    count = last_dates.count()
+
     last_dates.write.format("delta").mode("overwrite").saveAsTable(CHECKPOINT_TABLE)
     
-    return last_dates.count()
+    return count
 
 # METADATA ********************
 

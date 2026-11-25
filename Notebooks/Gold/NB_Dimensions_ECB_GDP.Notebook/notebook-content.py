@@ -29,7 +29,7 @@ df_dim_fx = spark.table("silver.ecb_exchange_rates").select(
     date_format(col("date"), "yyyyMMdd").cast("integer").alias("date_key"),
     col("usd_per_eur"))
 
-df_dim_zone.write.mode("overwrite").synapsesql("WH_Taxi_Analytics.dbo.DimZone")
+df_dim_fx.write.mode("overwrite").synapsesql("WH_Taxi_Analytics.dbo.DimFX")
 
 # METADATA ********************
 

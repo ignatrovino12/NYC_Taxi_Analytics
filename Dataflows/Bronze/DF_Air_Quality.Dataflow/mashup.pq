@@ -1,8 +1,8 @@
 [StagingDefinition = [Kind = "FastCopy"]]
 section Section1;
 shared OPENAQ_API_KEY = "9d39e186b53700fde47d9277cc5de9e6f48397cef1a1001b318e79b9f4d73b4e" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text, DefaultValue = ""];
-shared DateFrom = #date(2010, 1, 1) meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type date, DefaultValue = null];
-shared DateTo = #date(2016, 9, 30) meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type date, DefaultValue = null];
+shared DateFrom = #date(2016, 1, 1) meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type date, DefaultValue = null];
+shared DateTo = #date(2026, 10, 30) meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type date, DefaultValue = null];
 shared ChunkStartDate = #date(2010, 1, 1) meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type date, DefaultValue = null];
 shared ChunkEndDate = #date(2016, 9, 30) meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type date, DefaultValue = null];
 shared Query_Locations = let
@@ -163,25 +163,13 @@ let
     GetChunk = (Chunk as record) =>
     let
         Pages = List.Generate(
-            () => [
-                Page = 1,
-                Result = GetPageWithRetry(
-                    1,
-                    Chunk[FromDate],
-                    Chunk[ToDate]
-                ),
-                Continue = true
-            ],
+            () => [ Page = 1, Result = GetPageWithRetry( 1, Chunk[FromDate], Chunk[ToDate]), Continue = true],
 
             each [Continue],
 
             each
                 if not [Result][Success] then
-                    [
-                        Page = [Page],
-                        Result = [Result],
-                        Continue = false
-                    ]
+                    [ Page = [Page], Result = [Result], Continue = false]
                 else if List.Count([Result][Data]) = 1000 then
                     let
                         NextPage = [Page] + 1,
@@ -189,17 +177,9 @@ let
                             Function.InvokeAfter(
                                 () => GetPageWithRetry( NextPage, Chunk[FromDate], Chunk[ToDate]), #duration(0, 0, 0, 5))
                     in
-                        [
-                            Page = NextPage,
-                            Result = NextResult,
-                            Continue = true
-                        ]
+                        [ Page = NextPage, Result = NextResult, Continue = true]
                 else
-                    [
-                        Page = [Page],
-                        Result = [Result],
-                        Continue = false
-                    ],
+                    [ Page = [Page], Result = [Result], Continue = false],
 
             each
                 if [Result][Success] then

@@ -90,24 +90,6 @@ df_zones.groupBy("location_id").agg(count("*").alias("count")).filter(col("count
 
 # CELL ********************
 
-for location_id in [56, 103]:
-    print(f"ID: {location_id}")
-
-    for feature in data["features"]:
-        properties = feature["properties"]
-
-        if int(properties["locationid"]) == location_id:
-            print(properties["zone"], properties["borough"])
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
-# META }
-
-# CELL ********************
-
 id_counters = {}
 rows = []
 

@@ -169,7 +169,7 @@ df_comparison = ( df_peer_stats.join(df_hour_consensus, "hour")
         col("sensor_pm25") / when( col("peer_median") > 0, col("peer_median")))
     .withColumn(
         "is_suspect",
-        (col("peer_count") >= 9) &
+        (col("peer_count") >= 5) &
         (col("sensor_pm25") >= 20) &
         (col("sensor_pm25") > col("peer_median") * 4) &
         ((col("high_sensor_ratio") < 0.20) | (col("sensor_pm25") > col("peer_median") * 10))

@@ -24,3 +24,7 @@ The project follows a Medallion Architecture:
 
 More details about the project can be found in the documentation folder, including diagrams, ingestion workflows, transformation logic, data modeling, and dashboard explanations.
 
+## Dashboard Link
+
+https://app.fabric.microsoft.com/view?r=eyJrIjoiZWFhOTUyYjQtNGU2ZC00MzRhLWIzNTEtNzdlNmE5ZWQ2NjBiIiwidCI6ImE4ZTkwYzI3LTE3YzUtNDc1MC04ODRiLTYwM2M1NjQ3NWE5MCJ9&pageName=878c70020d5b93b415d5
+

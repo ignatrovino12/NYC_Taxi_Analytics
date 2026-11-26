@@ -30,8 +30,10 @@ The project has several data availability and integration limitations that shoul
 
 - **NO2 Sensor Availability:** No NO2 sensors were available within the NYC taxi-zone areas considered in the spatial analysis. Consequently, NO2 measurements cannot be analyzed at the taxi-zone level.
 
-- **Historical Taxi Data:** The NYC TLC dataset used in the project covers the period from 2011 to 2026. Data from before 2011 follows a different schema and would require a separate ingestion and transformation process. While integrating this data is technically possible, the project scope and current implementation were limited to records from 2011 onward.
+- **Historical Taxi Data and Source Completeness:** The NYC TLC dataset used in the project covers the period from 2011 to 2026. Data from before 2011 follows a different schema and would require a separate ingestion and transformation process. While integrating this data is technically possible, the project scope and current implementation were limited to records from 2011 onward. Additionally, some Parquet files contain significantly fewer trips than normal, indicating incomplete source data. This can affect the mobilty dashboard and should be considered when interpreting the results.
 
 - **Taxi Zone Assignment:** Taxi trips are assigned to zones based exclusively on the Pickup Location ID. Drop-off locations are not considered in the zone-level analysis. Therefore, the results reflect taxi activity originating from each zone rather than the total traffic associated with that zone.
 
 - **Different Data Coverage:** The external sources have different historical coverage and update frequencies, which limits the periods over which all datasets can be consistently compared.
+
+- **OpenAQ API Configuration**: The OpenAQ API key is provided as a Dataflow parameter rather than being retrieved from Azure Key Vault. Since Azure Key Vault was not available within the free cloud resources used, the API key was kept as an external Dataflow parameter.
